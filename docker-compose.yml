@@ -1,0 +1,26 @@
+services:
+  api:
+    build: .
+    container_name: user_api
+    volumes:
+      - ./app:/app/app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: uvicorn app.main:app --host 0.0.0.0 --reload # REMOVE LATER BEFORE PROD
+
+  db:
+    image: postgres:16
+    container_name: user_api_db
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
