@@ -19,6 +19,9 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+from app.core.database import Base
+import app.models
+
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
