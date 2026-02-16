@@ -10,6 +10,14 @@ class UsernameAlreadyExistsError(Exception):
     pass
 
 
+class UserNotFoundError(Exception):
+    pass
+
+
+class AdminSelfActionForbiddenError(Exception):
+    pass
+
+
 def create_user(db: Session, *, username: str, password: str) -> User:
     db.execute(text("SELECT pg_advisory_xact_lock(1234567890)"))
 
@@ -31,3 +39,56 @@ def create_user(db: Session, *, username: str, password: str) -> User:
 
     db.refresh(user)
     return user
+
+
+def update_user(db: Session, *, user: User, password: str | None) -> User:
+    if password:
+        user.hashed_password = hash_password(password)
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def list_users(db: Session) -> list[User]:
+    return db.query(User).order_by(User.id.asc()).all()
+
+
+def get_user_by_id(db: Session, user_id: int) -> User:
+    user = db.query(User).filter(User.id == user_id).one_or_none()
+    if user is None:
+        raise UserNotFoundError()
+    return user
+
+
+def set_user_active(
+        db: Session,
+        *,
+        target_user_id: int,
+        is_active: bool,
+        acting_admin: User,
+) -> User:
+    if acting_admin.id == target_user_id:
+        raise AdminSelfActionForbiddenError()
+
+    user = get_user_by_id(db, target_user_id)
+    user.is_active = is_active
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def delete_user(
+        db: Session,
+        *,
+        target_user_id: int,
+        acting_admin: User,
+) -> None:
+    if acting_admin.id == target_user_id:
+        raise AdminSelfActionForbiddenError()
+
+    user = get_user_by_id(db, target_user_id)
+
+    db.delete(user)
+    db.commit()

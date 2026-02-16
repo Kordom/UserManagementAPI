@@ -14,3 +14,6 @@ class UserRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserUpdate(BaseModel):
+    password: str | None = Field(default=None, min_length=8, max_length=72)
