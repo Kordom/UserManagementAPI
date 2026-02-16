@@ -13,6 +13,11 @@ class Settings(BaseSettings):
 
 
 def get_db_settings() -> Settings:
+    """
+    Gets db url from .env
+    Returns:
+        Database url
+    """
     return Settings(
         db_url=getenv("DATABASE_URL")
     )
