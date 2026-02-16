@@ -3,14 +3,14 @@ services:
     build: .
     container_name: user_api
     volumes:
-      - ./app:/app/app
+      - .:/app
     env_file:
       - .env
     ports:
       - "8000:8000"
     depends_on:
       - db
-    command: uvicorn app.main:app --host 0.0.0.0 --reload # REMOVE LATER BEFORE PROD
+    command: uvicorn app.main:app --host 0.0.0.0
 
   db:
     image: postgres:16
