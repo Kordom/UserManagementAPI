@@ -19,7 +19,6 @@ def db_engine():
 
     engine = create_engine(TEST_DATABASE_URL, pool_pre_ping=True)
 
-    # clean DB for each test: drop + create
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 

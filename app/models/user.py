@@ -7,6 +7,17 @@ from app.core.database import Base
 
 
 class User(Base):
+    """
+    Database model representing an application user.
+    Attributes:
+        id: Primary key identifier.
+        username: Unique username used for authentication.
+        hashed_password: Securely stored password hash.
+        is_active: Indicates whether the account is enabled.
+        is_admin: Indicates whether the user has administrative privileges.
+        created_at: Timestamp of user creation.
+        updated_at: Timestamp of last update.
+    """
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
