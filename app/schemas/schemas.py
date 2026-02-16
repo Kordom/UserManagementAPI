@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class UserCreate(BaseModel):
@@ -12,8 +12,7 @@ class UserRead(BaseModel):
     is_active: bool
     is_admin: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(BaseModel):
     password: str | None = Field(default=None, min_length=8, max_length=72)
